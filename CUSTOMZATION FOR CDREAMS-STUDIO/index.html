@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDREAMS</title>
+  
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Custom JS -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <!-- Background Slideshow Containers -->
+  <div class="bg-slideshow">
+    <div class="bg-slide active" style="background-image: url(PNG/Drake.jpeg);"></div>
+    <div class="bg-slide" style="background-image: url('PNG/Aiko.jpeg');"></div>
+    <div class="bg-slide" style="background-image: url('PNG/Don_Toliver.jpeg');"></div>
+  </div>
+  <div class="bg-overlay"></div>
+
+  <!-- Header Navigation -->
+  <header class="glass header-glass" id="siteHeader">
+    <div class="header-left">
+      <a href="index.html" class="home-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span>BACK TO HOMEPAGE</span>
+      </a>
+
+      <div class="logo-group">
+        <div class="logo-icon-wrap">
+          <img src="PNG/CDREAM_LOGO.png" alt="CDREAMS Logo" class="logo-img">
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">CDREAMS</span>
+          <span class="logo-subtitle">MAKE IT PERSONAL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Centered Headline + Sub-features Below -->
+    <div class="header-center">
+      <div class="header-tagline">YOUR SOUND. YOUR STORY.</div>
+      <div class="header-features">
+        <span>• Custom artwork</span>
+        <span>• NFC-ready</span>
+        <span>• Audio linked</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <a href="https://www.instagram.com/cdreams.lsca/" target="_blank" rel="noopener noreferrer" class="instagram-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        <span>Follow us</span>
+      </a>
+
+      <a href="#orderForm" class="header-cta">
+        <span>Start customizing</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Configurator Layout -->
+  <div class="container">
+    
+    <!-- Left Column: Input Form -->
+    <form id="orderForm" class="glass form-panel box-smooth">
+      <h2>Customize Your CD</h2>
+
+      <!-- Drag & Drop Upload Zone -->
+      <div class="form-group">
+        <label>1. Upload Artwork / Logo</label>
+        <div class="drop-zone box-smooth" id="dropZone">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#222" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+          </svg>
+          <div>Drag & Drop image here</div>
+          <div style="font-size: 0.7rem; color: #666; margin: 3px 0;">or</div>
+          <label for="imgUpload" class="file-btn box-smooth">Browse File</label>
+          <input type="file" id="imgUpload" accept="image/*" style="display: none;">
+          <div class="file-name-display" id="fileName">Default artwork active</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>2. Top Arched Name / Brand</label>
+        <input type="text" id="inputArcText" class="box-smooth" value="CDREAMS" placeholder="e.g. CDREAMS">
+      </div>
+
+      <div class="form-group">
+        <label>3. Add Title</label>
+        <input type="text" id="inputTitle" class="box-smooth" value="SOUNDTRACK FOR CDREAMS" placeholder="e.g. Album / Track Title">
+      </div>
+
+      <div class="form-group">
+        <label>4. First Name</label>
+        <input type="text" id="inputFirstName" class="box-smooth" value="" placeholder="First Name">
+      </div>
+
+      <div class="form-group">
+        <label>5. Last Name</label>
+        <input type="text" id="inputLastName" class="box-smooth" value="" placeholder="Last Name">
+      </div>
+
+      <div class="form-group">
+        <label>6. Grade & Section</label>
+        <input type="text" id="inputGradeSection" class="box-smooth" value="" placeholder="e.g. Grade 12 - I">
+      </div>
+
+      <div class="form-group">
+        <label>7. NFC Link (SoundCloud / Spotify)</label>
+        <input type="url" id="inputNfc" class="box-smooth" value="https://mysoundcloud.com/aurorac" placeholder="https://spotify.com/...">
+      </div>
+
+      <button type="submit" class="submit-btn box-smooth">Send Order via EmailJS</button>
+    </form>
+
+    <!-- Right Column: Interactive Previews -->
+    <div class="preview-panel">
+      
+      <!-- Display Style Selector Bar -->
+      <div class="glass top-controls box-smooth">
+        <div style="font-size: 0.85rem; font-weight: 700; color: #222;">Display Box Style:</div>
+        <div class="mode-toggle box-smooth">
+          <button class="mode-btn active box-smooth" id="btnModeFlat" type="button">Flat Preview</button>
+          <button class="mode-btn box-smooth" id="btnModeAcrylic" type="button">3D Acrylic Box</button>
+        </div>
+      </div>
+
+      <!-- Minimizable Vertical Music Player Widget -->
+      <div class="music-player-bar vertical-music glass box-smooth" id="musicPlayerWidget">
+        <div class="music-header">
+          <div class="music-title">Listen To Music while customizing</div>
+          <button type="button" class="minimize-btn" id="toggleMinimizeBtn" title="Minimize / Expand Player">
+            <span id="minimizeIcon">−</span>
+          </button>
+        </div>
+
+        <div class="music-buttons vertical-buttons" id="musicButtonsContainer">
+          <button type="button" class="music-btn box-smooth" data-track="1" data-bg="PNG/Drake.jpeg" data-src="AUDIO/Cece's_Interlude.mp3">
+            🎵 Drake - Interlude
+          </button>
+          <button type="button" class="music-btn box-smooth" data-track="2" data-bg="PNG/Aiko.jpeg" data-src="AUDIO/Jhene_Aiko_-_2_Seconds.mp3">
+            🎵 Jhene Aiko - 2 Seconds
+          </button>
+          <button type="button" class="music-btn box-smooth" data-track="3" data-bg="PNG/Don_Toliver.jpeg" data-src="AUDIO/Don_Toliver_-_No_Idea.mp3">
+            🎵 Don Toliver - No Idea
+          </button>
+          <button type="button" class="stop-music-btn box-smooth" id="stopMusicBtn">
+            ⏹ Stop Listening
+          </button>
+        </div>
+      </div>
+
+      <!-- Spinable Interactive CD Container -->
+      <div class="cd-container-box box-smooth" id="cdBoxContainer">
+        
+        <!-- Acrylic Glass Cover -->
+        <div class="acrylic-case-overlay">
+          <div class="acrylic-shine"></div>
+        </div>
+
+        <!-- Static Disc Base -->
+        <div class="cd-display" id="interactiveCd">
+          <!-- Glass Sheen Overlay -->
+          <div class="glass-sheen"></div>
+
+          <!-- Rotating Internal Layer -->
+          <div class="cd-rotating-content" id="cdRotatingContent">
+            <!-- Main Disc Artwork Preview -->
+            <img id="cdImagePreview" class="cd-art" src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80" alt="CD Artwork">
+            
+            <!-- Curved Text SVG -->
+            <svg class="cd-svg-text" viewBox="0 0 300 300">
+              <path id="textArcPath" d="M 50,150 A 100,100 0 0,1 250,150" fill="none" />
+              <text>
+                <textPath href="#textArcPath" startOffset="50%" text-anchor="middle" id="svgArcText">
+                  CDREAMS
+                </textPath>
+              </text>
+            </svg>
+
+            <!-- Label Details -->
+            <div class="cd-metadata">
+              <div class="cd-title-display" id="displayTitle">SOUNDTRACK FOR CDREAMS</div>
+              <div class="cd-sub-display" id="displayName">NAME: First Name Last Name</div>
+              <div class="cd-sub-display" id="displayGradeSec">CLASS: Grade 12 - I</div>
+            </div>
+          </div>
+
+          <!-- Static Center Hole Spindle -->
+          <div class="cd-center-hole"></div>
+        </div>
+      </div>
+
+      <!-- Keychain Preview Box -->
+      <div class="glass mockup-card box-smooth">
+        <h3>KEYCHAIN ATTACHMENT PREVIEW</h3>
+        <div class="keychain-ring"></div>
+        <div class="mini-cd-preview">
+          <div class="glass-sheen"></div>
+          <!-- Mini Keychain Artwork Preview -->
+          <img id="miniCdImagePreview" src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80" alt="Mini CD">
+          <div class="mini-cd-hole"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer Box -->
+  <footer class="glass box-smooth">
+    NFC Chip Integrated | High-Quality Print | Durable Acrylic | Custom Audio & Data via EmailJS
+  </footer>
+
+</body>
+</html>
