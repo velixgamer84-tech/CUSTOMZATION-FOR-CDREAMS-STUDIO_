@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Safety EmailJS initialization
+  // EmailJS v4 initialization
   try {
     if (typeof emailjs !== 'undefined') {
-      emailjs.init("YN__2qWaVX8ZQUoBK");
+      emailjs.init({ publicKey: "YN__2qWaVX8ZQUoBK" });
     }
   } catch (err) {
     console.warn("EmailJS initialization skipped:", err);
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Rotatable CD Disc Physics (Rotates inner content layer only)
+  // Rotatable CD Disc Physics
   const cdDisplay = document.getElementById('interactiveCd');
   const cdRotatingContent = document.getElementById('cdRotatingContent');
 
@@ -278,11 +278,25 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('touchend', stopDrag);
   }
 
-  // EmailJS Form Submission
+  // EmailJS Mobile-Optimized Form Submission
   const orderForm = document.getElementById('orderForm');
   if (orderForm) {
     orderForm.addEventListener('submit', function(e) {
       e.preventDefault();
+
+      const submitBtn = orderForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+      }
+
+      // Check image payload size (EmailJS limits free request bodies to 50KB)
+      let finalImageData = uploadedImageData;
+      if (uploadedImageData && uploadedImageData.length > 50000) {
+        finalImageData = "Custom artwork uploaded (Preview generated on page, base64 payload omitted for email length limit)";
+      } else if (!uploadedImageData) {
+        finalImageData = "No custom image uploaded (Default artwork active)";
+      }
 
       const templateParams = {
         top_text: inputArcText?.value || '',
@@ -291,19 +305,32 @@ document.addEventListener('DOMContentLoaded', () => {
         last_name: inputLastName?.value || '',
         grade_section: inputGradeSection?.value || '',
         nfc_link: document.getElementById('inputNfc')?.value || '',
-        image_data: uploadedImageData || 'No custom image uploaded (Default artwork active)'
+        image_data: finalImageData
       };
 
       if (typeof emailjs !== 'undefined') {
         emailjs.send('service_0qaj8o3', 'template_n9up1ht', templateParams)
           .then(function() {
             alert('Design details & artwork sent successfully!');
-          }, function(error) {
-            alert('Failed to send design. Check EmailJS configuration.');
+            orderForm.reset();
+            updatePreview();
+          })
+          .catch(function(error) {
+            alert('Failed to send design. Please check network connection.');
             console.error('EmailJS Error:', error);
+          })
+          .finally(function() {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Send Order via EmailJS';
+            }
           });
       } else {
-        alert('Form input captured locally!');
+        alert('EmailJS SDK not loaded. Form input captured locally.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Order via EmailJS';
+        }
       }
     });
   }
