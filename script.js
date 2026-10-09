@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Compress image using Canvas to easily fit within EmailJS free payload limits
   function handleImageFile(file) {
     if (!file.type.startsWith('image/')) {
       alert('Please upload a valid image file.');
@@ -120,17 +121,38 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const reader = new FileReader();
     reader.onload = function(event) {
-      uploadedImageData = event.target.result; // Base64 String
-      
-      // Update the CD disc artwork immediately
-      if (cdImagePreview) {
-        cdImagePreview.src = uploadedImageData;
-      }
-      
-      // Update the Keychain artwork immediately
-      if (miniCdImagePreview) {
-        miniCdImagePreview.src = uploadedImageData;
-      }
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const maxDim = 350; // Max dimension in pixels
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress image to low-weight JPEG Base64 (~15KB - 25KB)
+        uploadedImageData = canvas.toDataURL('image/jpeg', 0.7);
+
+        // Update instant live preview on page
+        if (cdImagePreview) cdImagePreview.src = uploadedImageData;
+        if (miniCdImagePreview) miniCdImagePreview.src = uploadedImageData;
+      };
+      img.src = event.target.result;
     };
     reader.readAsDataURL(file);
   }
@@ -211,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Rotatable CD Disc Physics (Rotates inner content layer only)
+  // Rotatable CD Disc Physics
   const cdDisplay = document.getElementById('interactiveCd');
   const cdRotatingContent = document.getElementById('cdRotatingContent');
 
@@ -278,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('touchend', stopDrag);
   }
 
-  // EmailJS Mobile-Optimized Form Submission
+  // EmailJS Form Submission
   const orderForm = document.getElementById('orderForm');
   if (orderForm) {
     orderForm.addEventListener('submit', function(e) {
@@ -290,16 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Sending...';
       }
 
-      // Safeguard: Omit raw base64 if it exceeds EmailJS free tier payload limits (~40KB)
-      let finalImageData = "Default artwork active";
-      if (uploadedImageData) {
-        if (uploadedImageData.length > 40000) {
-          finalImageData = "Custom image uploaded (Base64 omitted due to email size limit)";
-        } else {
-          finalImageData = uploadedImageData;
-        }
-      }
-
       const templateParams = {
         top_text: inputArcText?.value || '',
         title: inputTitle?.value || '',
@@ -307,15 +319,15 @@ document.addEventListener('DOMContentLoaded', () => {
         last_name: inputLastName?.value || '',
         grade_section: inputGradeSection?.value || '',
         nfc_link: document.getElementById('inputNfc')?.value || '',
-        image_data: finalImageData
+        image_data: uploadedImageData || '' // Sends compressed Base64 JPEG string
       };
 
       if (typeof emailjs !== 'undefined') {
-        // Passing public key explicitly as 4th parameter guarantees mobile delivery
         emailjs.send('service_0qaj8o3', 'template_n9up1ht', templateParams, 'YN__2qWaVX8ZQUoBK')
           .then(function(response) {
             alert('Design details & artwork sent successfully!');
             orderForm.reset();
+            uploadedImageData = '';
             updatePreview();
           })
           .catch(function(error) {
@@ -329,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
       } else {
-        alert('EmailJS SDK failed to load. Please check your connection or disable adblockers.');
+        alert('EmailJS SDK failed to load. Please check your connection.');
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Send Order via EmailJS';
