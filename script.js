@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // EmailJS v4 initialization
+  // Safety EmailJS v4 initialization
   try {
     if (typeof emailjs !== 'undefined') {
       emailjs.init({ publicKey: "YN__2qWaVX8ZQUoBK" });
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Rotatable CD Disc Physics
+  // Rotatable CD Disc Physics (Rotates inner content layer only)
   const cdDisplay = document.getElementById('interactiveCd');
   const cdRotatingContent = document.getElementById('cdRotatingContent');
 
@@ -290,12 +290,14 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Sending...';
       }
 
-      // Check image payload size (EmailJS limits free request bodies to 50KB)
-      let finalImageData = uploadedImageData;
-      if (uploadedImageData && uploadedImageData.length > 50000) {
-        finalImageData = "Custom artwork uploaded (Preview generated on page, base64 payload omitted for email length limit)";
-      } else if (!uploadedImageData) {
-        finalImageData = "No custom image uploaded (Default artwork active)";
+      // Safeguard: Omit raw base64 if it exceeds EmailJS free tier payload limits (~40KB)
+      let finalImageData = "Default artwork active";
+      if (uploadedImageData) {
+        if (uploadedImageData.length > 40000) {
+          finalImageData = "Custom image uploaded (Base64 omitted due to email size limit)";
+        } else {
+          finalImageData = uploadedImageData;
+        }
       }
 
       const templateParams = {
@@ -309,15 +311,16 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       if (typeof emailjs !== 'undefined') {
-        emailjs.send('service_0qaj8o3', 'template_n9up1ht', templateParams)
-          .then(function() {
+        // Passing public key explicitly as 4th parameter guarantees mobile delivery
+        emailjs.send('service_0qaj8o3', 'template_n9up1ht', templateParams, 'YN__2qWaVX8ZQUoBK')
+          .then(function(response) {
             alert('Design details & artwork sent successfully!');
             orderForm.reset();
             updatePreview();
           })
           .catch(function(error) {
-            alert('Failed to send design. Please check network connection.');
-            console.error('EmailJS Error:', error);
+            console.error('EmailJS Error Details:', error);
+            alert('Failed to send design: ' + (error.text || error.message || 'Check network connection'));
           })
           .finally(function() {
             if (submitBtn) {
@@ -326,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
       } else {
-        alert('EmailJS SDK not loaded. Form input captured locally.');
+        alert('EmailJS SDK failed to load. Please check your connection or disable adblockers.');
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Send Order via EmailJS';
